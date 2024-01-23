@@ -6,17 +6,14 @@ from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
 from webdriver_manager.firefox import GeckoDriverManager
 from webdriver_manager.microsoft import EdgeChromiumDriverManager
+from selenium.webdriver.firefox.service import Service as FirefoxService
 driver = None
 
 @pytest.fixture(autouse=True)
 def setup(request, browser, url):
     global driver
-    if browser == "chrome":
-        driver = webdriver.Chrome(executable_path=ChromeDriverManager().install())
-    elif browser == "firefox":
-        driver = webdriver.Firefox(executable_path=GeckoDriverManager().install())
-    elif browser == "edge":
-        driver = webdriver.Edge(EdgeChromiumDriverManager().install())
+    if browser == "firefox":
+        driver = webdriver.Firefox(service=FirefoxService(GeckoDriverManager().install()))
     driver.get(url)
     driver.maximize_window()
     request.cls.driver = driver
@@ -59,4 +56,4 @@ def pytest_runtest_makereport(item):
         report.extra = extra
 
 def pytest_html_report_title(report):
-    report.title = "RCV Academy Automation Report"
+    report.title = "Automation Report"
